@@ -51,8 +51,9 @@ class karer_Calendar_HMI:
   def on_start(self, event):
     # you could use this method to create a floating window
     # that represents what is being dragged.
-
-    print("started")
+    self.x_coordinates_of_button_click = event.x
+    self.y_coordinates_of_button_click = event.y
+    #print("started")
     pass
 
   def on_drag(self, event):
@@ -61,8 +62,8 @@ class karer_Calendar_HMI:
 
     print("dragged")
 
-    event.widget.place(x=self.window.winfo_pointerx() - self.window.winfo_rootx(), y=self.window.winfo_pointery() - self.window.winfo_rooty())
-    print("x= " +str(event.x_root)+ " y= " + str(event.y_root))
+    event.widget.place(x=self.window.winfo_pointerx() - self.window.winfo_rootx() - self.x_coordinates_of_button_click, y=self.window.winfo_pointery() - self.window.winfo_rooty() - self.y_coordinates_of_button_click)
+    #print("x= " +str(event.x_root)+ " y= " + str(event.y_root))
     #Label(w, text="x= " +event.x+ " y= " + event.y , font=("Arial Bold", 15), background="Light Blue", width=20).place(x=600, y=600)
     #pass
 
@@ -384,6 +385,8 @@ class karer_Calendar_HMI:
     self.calendar_data = data_class.karer_data()
 
     #self.dnd = DragManager()
+    self.x_coordinates_of_button_click = 0
+    self.y_coordinates_of_button_click = 0
 
     self.window = Tk()
     self.window.title("Karer Montaj Takvimi")
