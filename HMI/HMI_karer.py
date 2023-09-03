@@ -58,6 +58,7 @@ class karer_Calendar_HMI:
   def on_drag(self, event):
     # you could use this method to move a floating window that
     # represents what you're dragging
+
     print("dragged")
 
     event.widget.place(x=self.window.winfo_pointerx() - self.window.winfo_rootx(), y=self.window.winfo_pointery() - self.window.winfo_rooty())
