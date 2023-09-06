@@ -316,7 +316,7 @@ class karer_Calendar_HMI:
   def __add_the_order(self):
 
     if self.text_adr.get(1.0, 'end-1c') != "" and self.text_Person.get(1.0, 'end-1c') != "" and self.text_tel.get(1.0, 'end-1c') != "" and self.text_order_details.get(1.0, 'end-1c') != "":
-      self.calendar_data.add_an_unallocated_team(region= self.value_inside_region.get(), address= self.text_adr.get(1.0, 'end-1c'), person= self.text_Person.get(1.0, 'end-1c'), tel= self.text_tel.get(1.0, 'end-1c'), order_details= self.text_order_details.get(1.0, 'end-1c'))
+      self.calendar_data.add_an_unallocated_slot(region= self.value_inside_region.get(), address= self.text_adr.get(1.0, 'end-1c'), person= self.text_Person.get(1.0, 'end-1c'), tel= self.text_tel.get(1.0, 'end-1c'), order_details= self.text_order_details.get(1.0, 'end-1c'))
       #last_elem = len(self.calendar_data.unallocated_orders) - 1
       #print(self.calendar_data.unallocated_orders[last_elem].region)
       #print(self.calendar_data.unallocated_orders[last_elem].address)
