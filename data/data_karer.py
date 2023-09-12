@@ -40,6 +40,12 @@ class team_data:
         temp_day = day_data(date, slot_data_to_insert)
         self.day_arr.append(temp_day)
 
+    def get_slots_for_the_day(self, date):
+        for temp in self.day_arr:
+            if date == temp.date_of_data:  # same date is reached, the date object already exist, just add the slot
+                return temp.slot_arr
+        return []
+
 class karer_data:
 
     def add_team(self,team_name):
@@ -78,31 +84,51 @@ class karer_data:
 
         slot_temp = slot_data()
         slot_temp.tel = "3166"
+        slot_temp.person = "ArdaJUAN"
         self.all_teams_data[0].add_slot_to_the_team(slot_temp, datetime.date.today())
 
         slot_temp_a = slot_data()
         slot_temp_a.tel = "3366"
+        slot_temp_a.person = "PICCIRIX"
         self.all_teams_data[0].add_slot_to_the_team(slot_temp_a, datetime.date.today() + datetime.timedelta(days=2))
-        print(self.all_teams_data[0].day_arr[0].slot_arr[0].tel)
-        print(self.all_teams_data[0].day_arr[1].slot_arr[0].tel)
+
+        slot_temp_b = slot_data()
+        slot_temp_b.tel = "3266"
+        slot_temp_b.person = "ADNAN"
+        self.all_teams_data[0].add_slot_to_the_team(slot_temp_b, datetime.date.today() + datetime.timedelta(days=1))
+
+        slot_temp_c = slot_data()
+        slot_temp_c.tel = "3466"
+        slot_temp_c.person = "SAFAK"
+        self.all_teams_data[0].add_slot_to_the_team(slot_temp_c, datetime.date.today() + datetime.timedelta(days=3))
+
+        slot_temp_d = slot_data()
+        slot_temp_d.tel = "3066"
+        slot_temp_d.person = "SERIF"
+        self.all_teams_data[0].add_slot_to_the_team(slot_temp_d, datetime.date.today() - datetime.timedelta(days=3))
+
+        slot_temp_e = slot_data()
+        slot_temp_e.tel = "326669"
+        slot_temp_e.person = "RUBY"
+        self.all_teams_data[0].add_slot_to_the_team(slot_temp_e, datetime.date.today() + datetime.timedelta(days=1))
+
+        output_slot = self.all_teams_data[0].get_slots_for_the_day(datetime.date.today() + datetime.timedelta(days=1))
+        print(output_slot[0].tel)
+        print(output_slot[1].tel)
 
         '''
-        slot_temp.tel = "3266"
-        self.all_teams_data[0].add_slot_to_the_team(slot_temp, datetime.date.today() + datetime.timedelta(days=1))
+        #output_slot[1].tel = "5"
+        arda = output_slot
+        arda[1].tel = "5"
+
         print(self.all_teams_data[0].day_arr[0].slot_arr[0].tel)
         print(self.all_teams_data[0].day_arr[1].slot_arr[0].tel)
         print(self.all_teams_data[0].day_arr[2].slot_arr[0].tel)
+        print(self.all_teams_data[0].day_arr[3].slot_arr[0].tel)
+        print(self.all_teams_data[0].day_arr[4].slot_arr[0].tel)
+        print(self.all_teams_data[0].day_arr[2].slot_arr[1].tel)
         '''
-        '''
-        slot_temp.tel = "3466"
-        self.all_teams_data[0].add_slot_to_the_team(slot_temp, datetime.date.today() + datetime.timedelta(days=3))
-        slot_temp.tel = "3066"
-        self.all_teams_data[0].add_slot_to_the_team(slot_temp, datetime.date.today() - datetime.timedelta(days=3))
-        slot_temp.tel = "326669"
-        self.all_teams_data[0].add_slot_to_the_team(slot_temp, datetime.date.today() + datetime.timedelta(days=1))
 
-        print(self.all_teams_data[0].day_arr[0].slot_arr[0].tel)
-        '''
 
         '''
         self.add_team("Delta")

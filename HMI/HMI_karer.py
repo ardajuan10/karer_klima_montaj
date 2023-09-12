@@ -77,64 +77,53 @@ class karer_Calendar_HMI:
     except:
       pass
 
+  def place_canvas(self, x_axis, y_axis, slot_data):
+    rect_w = 160
+    rect_h = 80
+    canvas_out = Canvas(self.window, width=rect_w, height=rect_h, bg="Beige", bd=0, highlightthickness=0, )
+    canvas_out.place(x=x_axis, y=y_axis)
+    self.add_dragable(canvas_out)
+    Label(canvas_out, text=slot_data.person + "\n" + slot_data.region, font=("Arial", 11), background="Beige").place(x=5, y=5)
+    Button(canvas_out, text="Detaylar").place(x=40, y=50)
+
+    return canvas_out
+
   def __place_unallocated_orders(self):
 
+    start_x_rec = 1450
+    start_y_rec = 160
+
+    label_offset = 85
 
     lbl_unalloc_order = Label(self.window, text= "Tahsis Edilmemiş\nSiparişler", font=("Arial Bold", 15), background = "Light Blue", width= 20)
     lbl_unalloc_order.configure(anchor="w")
-    lbl_unalloc_order.place(x=1300,y=95)
+    lbl_unalloc_order.place(x=start_x_rec,y=95)
 
     for i in range(len(self.unallocated_order_canv)):
       try:
-        #self.unallocated_order_label[i].destroy()
-        #self.unallocated_order_detail_button[i].destroy()
         self.unallocated_order_canv[i].destroy()
       except:
         print("table setroy err")
 
-    #self.unallocated_order_label = []
-    #self.unallocated_order_detail_button = []
-    self.unallocated_order_canv = []
-    #canvas = Canvas(self.window)
 
-    start_x_rec = 1300
-    start_y_rec = 160
-    rect_w = 160
-    rect_h = 80
-    start_x_con = 1310
-    start_y_con = 170
-    button_offset = 40
-    label_offset = 85
+    self.unallocated_order_canv = []
+
+
 
     for i in range(len(self.calendar_data.unallocated_orders)):
-      #self.unallocated_order_label.append(Label(self.window, text= self.calendar_data.unallocated_orders[i].person + "\n" + self.calendar_data.unallocated_orders[i].region, font=("Arial", 11),background="Light Blue"))
-      #self.unallocated_order_detail_button.append(Button(self.window, text= "Detaylar"))
+      self.unallocated_order_canv.append(self.place_canvas(x_axis = start_x_rec, y_axis = start_y_rec + i * label_offset, slot_data = self.calendar_data.unallocated_orders[i]))
+      #self.unallocated_order_canv.append(Canvas(self.window,width=rect_w,height=rect_h,bg="Beige",bd=0,highlightthickness=0,))
 
-      self.unallocated_order_canv.append(Canvas(self.window,width=rect_w,height=rect_h,bg="Beige",bd=0,highlightthickness=0,))
-
-
-
-
-      #self.unallocated_order_rect[i].create_rectangle(start_x_rec,start_y_rec + i*label_offset, start_x_rec + rect_w, start_y_rec + rect_h, fill="Green")
-      #self.unallocated_order_rect[i].pack(fill=BOTH,expand=1)
-      #self.unallocated_order_rect[i].place(x=start_x_rec, y=start_y_rec + i*label_offset)
-      #self.unallocated_order_rect[i].create_rectangle(1,1,rect_w,rect_h,fill="Green")
-      #canvas.create_text(300, 50, text="HELLO WORLD", fill="black", font=('Helvetica 15 bold'))
-      #canvas.pack()
-
+      '''
       self.unallocated_order_canv[i].place(x=start_x_rec, y=start_y_rec + i * label_offset)
       self.add_dragable(self.unallocated_order_canv[i])
-      #self.unallocated_order_canv[i].create_text(30,22,text= self.calendar_data.unallocated_orders[i].person + "\n" + self.calendar_data.unallocated_orders[i].region, font=("Arial", 11),)
-      #det_button = Button(self.unallocated_order_canv[i], text="Detaylar")
       Label(self.unallocated_order_canv[i], text= self.calendar_data.unallocated_orders[i].person + "\n" + self.calendar_data.unallocated_orders[i].region, font=("Arial", 11),background= "Beige").place(x=5,y=5)
       Button(self.unallocated_order_canv[i], text="Detaylar").place(x=40,y=50)
-      #self.unallocated_order_label[i].place(x=start_x_con, y=start_y_con + i*label_offset)
-      #self.unallocated_order_detail_button[i].place(x=start_x_con, y=start_y_con + i*label_offset + button_offset)
-
+      '''
   def __place_in_table(self, row, column, content, back):
     start_x = 170
     start_y = 95
-    gap_x = 150
+    gap_x = 180
     gap_y = 30
     width_x = 12
     try:
@@ -166,6 +155,61 @@ class karer_Calendar_HMI:
     self.__place_in_table(0, 5, "Cumartesi", "Light Blue")
     self.__place_in_table(0, 6, "Pazar", "Light Blue")
 
+  def __place_the_allocated_orders_for_the_week(self):
+
+
+    start_x = 170
+    start_y = 155
+    gap_x = 180
+    gap_y = 85
+
+    #destroy the allocated orders
+    '''
+    for col in range(self.no_of_days):
+      try:
+        slot_arr = self.calendar_data.all_teams_data[self.current_team_index].get_slots_for_the_day(self.dates_arr[col])
+      except:
+        print("couldnt destroy")
+
+      for row in range(len(slot_arr)):
+        try:
+          self.allocated_order_canv[col][row].destroy()
+        except:
+          print("couldnt destroy")
+    '''
+
+    for temp in self.allocated_order_canv:
+      try:
+        temp.destroy()
+      except:
+        print("couldnt destroy allocated canvas")
+
+    #empty the allocated order arr
+    self.allocated_order_canv = []
+
+    #finally place the canvases one by one
+    for col in range(self.no_of_days):
+      try:
+        slot_arr = self.calendar_data.all_teams_data[self.current_team_index].get_slots_for_the_day(self.dates_arr[col])
+      except:
+        print("no team present")
+
+      for row in range(len(slot_arr)):
+        self.allocated_order_canv.append(self.place_canvas(x_axis = start_x + col * gap_x, y_axis = start_y + row * gap_y, slot_data = slot_arr[row]))
+
+
+
+
+
+  def __place_dates_and_allocated_orders(self):
+    for i in range(self.no_of_days):
+      if self.dates_arr[i] == date.today():
+        self.__place_in_table(1, i, self.dates_arr[i], "light green")
+      else:
+        self.__place_in_table(1, i, self.dates_arr[i], "Light Blue")
+
+    self.__place_the_allocated_orders_for_the_week()
+
   def __place_the_dates_according_to_today(self):
     ##FIND TODAYS DATE
     days_arr = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -178,31 +222,23 @@ class karer_Calendar_HMI:
     ##PLACE THE DATES TO 1st COLUMN
     for i in range(self.no_of_days):
       self.dates_arr[i] = today + timedelta(days=i - which_day_is_today)
-      #self.__place_in_table(1, i, self.dates_arr[i])
 
-      if i == which_day_is_today:
-        self.__place_in_table(1, i, self.dates_arr[i], "light green")
-      else:
-        self.__place_in_table(1, i, self.dates_arr[i], "Light Blue")
+    self.__place_dates_and_allocated_orders()
 
   def __go_one_week_back(self):
 
     for i in range(self.no_of_days):
       self.dates_arr[i] = self.dates_arr[i] - timedelta(days= 7)
-      if self.dates_arr[i] == date.today():
-        self.__place_in_table(1, i, self.dates_arr[i], "light green")
-      else:
-        self.__place_in_table(1, i, self.dates_arr[i], "Light Blue")
+
+    self.__place_dates_and_allocated_orders()
 
   def __go_one_week_forward(self):
 
 
     for i in range(self.no_of_days):
       self.dates_arr[i] = self.dates_arr[i] + timedelta(days=7)
-      if self.dates_arr[i] == date.today():
-        self.__place_in_table(1, i, self.dates_arr[i], "light green")
-      else:
-        self.__place_in_table(1, i, self.dates_arr[i], "Light Blue")
+
+    self.__place_dates_and_allocated_orders()
 
   def __forward_backward_today_buttons(self):
     Backwards = Button(self.window, text="<", command = self.__go_one_week_back)
@@ -407,6 +443,7 @@ class karer_Calendar_HMI:
     #self.unallocated_order_label = []
     #self.unallocated_order_detail_button = []
     self.unallocated_order_canv = []
+    self.allocated_order_canv = []
     self.lbl_team_list = []  # list of teams
 
     self.__place_unallocated_orders()
