@@ -4,85 +4,53 @@ from PIL import Image, ImageTk
 from datetime import date
 from datetime import timedelta
 import data.data_karer as data_class
-'''
-#command=lambda w=widget: self.on_start(index)
-class DragManager():
-  def add_dragable(self, widget, win):
-    widget.bind("<ButtonPress-1>", self.on_start)
-    widget.bind("<B1-Motion>", self.on_drag)
-    widget.bind("<ButtonRelease-1>", self.on_drop)
-    #Label(win, text="Arda", font=("Arial Bold", 15), background="Light Blue", width=20).place(x=600,y=600)
-    #widget.configure(cursor="hand1")
 
-  def on_start(self, event):
-    # you could use this method to create a floating window
-    # that represents what is being dragged.
+class drag_n_drop:
+    def add_dragable(self, widget):
+        widget.bind("<ButtonPress-1>", self.on_start)
+        widget.bind("<B1-Motion>", self.on_drag)
+        widget.bind("<ButtonRelease-1>", self.on_drop)
+        # Label(win, text="Arda", font=("Arial Bold", 15), background="Light Blue", width=20).place(x=600,y=600)
+        # widget.configure(cursor="hand1")
 
-    print("started")
-    pass
+    def on_start(self, event):
+        # you could use this method to create a floating window
+        # that represents what is being dragged.
+        self.x_coordinates_of_button_click = event.x
+        self.y_coordinates_of_button_click = event.y
+        # print("started")
+        pass
 
-  def on_drag(self, event):
-    # you could use this method to move a floating window that
-    # represents what you're dragging
-    print("dragged")
-    event.widget.place(x=event.x_root - event.x,y=event.y_root - event.y)
-    print("x= " +str(event.x_root)+ " y= " + str(event.y_root))
-    #Label(w, text="x= " +event.x+ " y= " + event.y , font=("Arial Bold", 15), background="Light Blue", width=20).place(x=600, y=600)
-    #pass
+    def on_drag(self, event):
+        # you could use this method to move a floating window that
+        # represents what you're dragging
 
-  def on_drop(self, event):
-    # find the widget under the cursor
-    print("dropped")
-    x, y = event.widget.winfo_pointerxy()
-    target = event.widget.winfo_containing(x, y)
-    try:
-      target.configure(image=event.widget.cget("image"))
-    except:
-      pass
-'''
+        print("dragged")
+
+        event.widget.place(
+            x=self.window.winfo_pointerx() - self.window.winfo_rootx() - self.x_coordinates_of_button_click,
+            y=self.window.winfo_pointery() - self.window.winfo_rooty() - self.y_coordinates_of_button_click)
+        # print("x= " +str(event.x_root)+ " y= " + str(event.y_root))
+        # Label(w, text="x= " +event.x+ " y= " + event.y , font=("Arial Bold", 15), background="Light Blue", width=20).place(x=600, y=600)
+        # pass
+
+    def on_drop(self, event):
+        # find the widget under the cursor
+        print("dropped")
+        self.karer_hmi.refresh_page()
+
+    def __init__(self,win,hmi):
+        self.window = win
+        self.karer_hmi = hmi
+
 class karer_Calendar_HMI:
-  def add_dragable(self, widget):
-    widget.bind("<ButtonPress-1>", self.on_start)
-    widget.bind("<B1-Motion>", self.on_drag)
-    widget.bind("<ButtonRelease-1>", self.on_drop)
-    #Label(win, text="Arda", font=("Arial Bold", 15), background="Light Blue", width=20).place(x=600,y=600)
-    #widget.configure(cursor="hand1")
-
-  def on_start(self, event):
-    # you could use this method to create a floating window
-    # that represents what is being dragged.
-    self.x_coordinates_of_button_click = event.x
-    self.y_coordinates_of_button_click = event.y
-    #print("started")
-    pass
-
-  def on_drag(self, event):
-    # you could use this method to move a floating window that
-    # represents what you're dragging
-
-    print("dragged")
-
-    event.widget.place(x=self.window.winfo_pointerx() - self.window.winfo_rootx() - self.x_coordinates_of_button_click, y=self.window.winfo_pointery() - self.window.winfo_rooty() - self.y_coordinates_of_button_click)
-    #print("x= " +str(event.x_root)+ " y= " + str(event.y_root))
-    #Label(w, text="x= " +event.x+ " y= " + event.y , font=("Arial Bold", 15), background="Light Blue", width=20).place(x=600, y=600)
-    #pass
-
-  def on_drop(self, event):
-    # find the widget under the cursor
-    print("dropped")
-    x, y = event.widget.winfo_pointerxy()
-    target = event.widget.winfo_containing(x, y)
-    try:
-      target.configure(image=event.widget.cget("image"))
-    except:
-      pass
 
   def place_canvas(self, x_axis, y_axis, slot_data):
     rect_w = 160
     rect_h = 80
     canvas_out = Canvas(self.window, width=rect_w, height=rect_h, bg="Beige", bd=0, highlightthickness=0, )
     canvas_out.place(x=x_axis, y=y_axis)
-    self.add_dragable(canvas_out)
+    self.drag.add_dragable(canvas_out)
     Label(canvas_out, text=slot_data.person + "\n" + slot_data.region, font=("Arial", 11), background="Beige").place(x=5, y=5)
     Button(canvas_out, text="Detaylar").place(x=40, y=50)
 
@@ -112,14 +80,7 @@ class karer_Calendar_HMI:
 
     for i in range(len(self.calendar_data.unallocated_orders)):
       self.unallocated_order_canv.append(self.place_canvas(x_axis = start_x_rec, y_axis = start_y_rec + i * label_offset, slot_data = self.calendar_data.unallocated_orders[i]))
-      #self.unallocated_order_canv.append(Canvas(self.window,width=rect_w,height=rect_h,bg="Beige",bd=0,highlightthickness=0,))
 
-      '''
-      self.unallocated_order_canv[i].place(x=start_x_rec, y=start_y_rec + i * label_offset)
-      self.add_dragable(self.unallocated_order_canv[i])
-      Label(self.unallocated_order_canv[i], text= self.calendar_data.unallocated_orders[i].person + "\n" + self.calendar_data.unallocated_orders[i].region, font=("Arial", 11),background= "Beige").place(x=5,y=5)
-      Button(self.unallocated_order_canv[i], text="Detaylar").place(x=40,y=50)
-      '''
   def __place_in_table(self, row, column, content, back):
     start_x = 170
     start_y = 95
@@ -159,24 +120,9 @@ class karer_Calendar_HMI:
 
 
     start_x = 170
-    start_y = 155
+    start_y = 160
     gap_x = 180
     gap_y = 85
-
-    #destroy the allocated orders
-    '''
-    for col in range(self.no_of_days):
-      try:
-        slot_arr = self.calendar_data.all_teams_data[self.current_team_index].get_slots_for_the_day(self.dates_arr[col])
-      except:
-        print("couldnt destroy")
-
-      for row in range(len(slot_arr)):
-        try:
-          self.allocated_order_canv[col][row].destroy()
-        except:
-          print("couldnt destroy")
-    '''
 
     for temp in self.allocated_order_canv:
       try:
@@ -255,6 +201,7 @@ class karer_Calendar_HMI:
     self.ammend_team.destroy()
     self.__list_team_names()
     self.__present_team_name()
+    self.__place_dates_and_allocated_orders()
 
 
   def __delete_team(self,index):
@@ -267,12 +214,14 @@ class karer_Calendar_HMI:
     if self.current_team_index < 0:
       self.current_team_index = 0
     self.__present_team_name()
+    self.__place_dates_and_allocated_orders()
 
   def __select_team(self,index):
     self.current_team_index = index
     self.ammend_team.destroy()
     #self.team_window.destroy()
     self.__present_team_name()
+    self.__place_dates_and_allocated_orders()
 
 
   def __delete_or_select_team(self,team_index):
@@ -317,6 +266,7 @@ class karer_Calendar_HMI:
     self.calendar_data.add_team(self.team_to_add_text.get(1.0,'end-1c'))
     self.__list_team_names()
     self.__present_team_name()
+    self.__place_dates_and_allocated_orders()
 
   def __manage_teams_window(self):
     self.team_window = Tk()
@@ -417,17 +367,36 @@ class karer_Calendar_HMI:
     take_order = Button(self.window, text="Sipariş Al", command=self.__take_order)
     take_order.place(x=250, y=30)
 
+  def refresh_page(self):
+    self.__place_unallocated_orders()
+    self.__place_dates_and_allocated_orders()
+    self.__present_team_name()
+
   def __init__(self):
     self.calendar_data = data_class.karer_data()
 
+
     #self.dnd = DragManager()
-    self.x_coordinates_of_button_click = 0
-    self.y_coordinates_of_button_click = 0
+    #self.x_coordinates_of_button_click = 0
+    #self.y_coordinates_of_button_click = 0
+
+
 
     self.window = Tk()
     self.window.title("Karer Montaj Takvimi")
     self.window.geometry('1500x1000')
     self.window.config(background="Light Blue")
+
+    '''
+    h = Scrollbar(self.window, orient='horizontal')
+    h.pack(side=BOTTOM, fill=X)
+    v = Scrollbar(self.window)
+    v.pack(side=RIGHT, fill=Y)
+    h.config(command=self.window.xview)
+    v.config(command=self.window.yview)
+    '''
+
+    self.drag = drag_n_drop(self.window, self)
 
     self.current_team_index = 0
 
