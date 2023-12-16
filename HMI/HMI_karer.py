@@ -1,9 +1,12 @@
 from tkinter import *
+from tkinter import ttk
 from tkinter.ttk import *
 from PIL import Image, ImageTk
 from datetime import date
 from datetime import timedelta
 import data.data_karer as data_class
+
+
 
 class drag_n_drop:
     def add_dragable(self, widget):
@@ -18,6 +21,43 @@ class drag_n_drop:
         # that represents what is being dragged.
         self.x_coordinates_of_button_click = event.x
         self.y_coordinates_of_button_click = event.y
+
+        #Find which unallocated order canvas has been moved
+        unallocated_order_found = FALSE
+        for i in range(len(self.karer_hmi.unallocated_order_canv)):
+          if self.karer_hmi.unallocated_order_canv[i] == event.widget:
+            print("Unallocated Order " + str(i) + " is being moved")
+            unallocated_order_found = TRUE
+
+        # Find which allocated order canvas has been moved
+        allocated_order_found = FALSE
+        allocated_order_found_no = 0
+        if unallocated_order_found == FALSE:
+          for i in range(len(self.karer_hmi.allocated_order_canv)):
+            if self.karer_hmi.allocated_order_canv[i] == event.widget:
+              #print("Allocated Order " + str(i) + " is being moved")
+              allocated_order_found = TRUE
+              allocated_order_found_no = i
+
+        #Map allocated order canvas to the data
+        slot_arr = []
+        inspected_allocated_order = 0
+        if allocated_order_found:
+          for col in range(self.karer_hmi.no_of_days):
+            try:
+              slot_arr = self.karer_hmi.calendar_data.all_teams_data[self.karer_hmi.current_team_index].get_slots_for_the_day(self.karer_hmi.dates_arr[col])
+            except:
+              print("no team present")
+
+            for row in range(len(slot_arr)):
+              if allocated_order_found_no == inspected_allocated_order:
+                print("Allocated Order day" + str(self.karer_hmi.dates_arr[col]) + " row" + str(row) + "is being moved")
+              inspected_allocated_order = inspected_allocated_order + 1
+
+
+
+
+
         # print("started")
         pass
 
@@ -25,7 +65,7 @@ class drag_n_drop:
         # you could use this method to move a floating window that
         # represents what you're dragging
 
-        print("dragged")
+        #print("dragged")
 
         event.widget.place(
             x=self.window.winfo_pointerx() - self.window.winfo_rootx() - self.x_coordinates_of_button_click,
@@ -384,16 +424,35 @@ class karer_Calendar_HMI:
 
     self.window = Tk()
     self.window.title("Karer Montaj Takvimi")
-    self.window.geometry('1500x1000')
+    self.window.geometry("800x600")
+    #window_temp.attributes('-fullscreen', True)  # make main window full-screen
     self.window.config(background="Light Blue")
 
     '''
-    h = Scrollbar(self.window, orient='horizontal')
-    h.pack(side=BOTTOM, fill=X)
-    v = Scrollbar(self.window)
-    v.pack(side=RIGHT, fill=Y)
-    h.config(command=self.window.xview)
-    v.config(command=self.window.yview)
+    #Create frame
+    frame_temp = Frame(window_temp)
+    frame_temp.pack(fill=BOTH, expand=1)
+
+    #Create canvas
+    my_canvas = Canvas(frame_temp, bg='Light Blue', highlightthickness=0)
+    my_canvas.pack(side=LEFT, fill=BOTH, expand=True)  # configure canvas to occupy the whole main window
+
+    #ADD a scrollbar to canvas
+    my_scrollbar = ttk.Scrollbar(frame_temp, orient=VERTICAL, command=my_canvas.yview)
+    my_scrollbar.pack(side=RIGHT, fill=Y)
+
+    #Configure the canvas
+    my_canvas.configure(yscrollcommand=my_scrollbar.set)
+    my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
+
+    #create a second frame you will put everything
+    second_frame = Frame(my_canvas)
+
+    #Add that new frame to a window in the canvas
+    my_canvas.create_window((0, 0), window=second_frame, anchor="nw")
+
+    #window will be used by all the code
+    self.window = my_canvas
     '''
 
     self.drag = drag_n_drop(self.window, self)
