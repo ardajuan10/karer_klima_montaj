@@ -23,26 +23,29 @@ class drag_n_drop:
         self.y_coordinates_of_button_click = event.y
 
         #Find which unallocated order canvas has been moved
-        unallocated_order_found = FALSE
+        self.unallocated_order_found = FALSE
+        self.unallocated_order_found_no = 0
         for i in range(len(self.karer_hmi.unallocated_order_canv)):
           if self.karer_hmi.unallocated_order_canv[i] == event.widget:
             print("Unallocated Order " + str(i) + " is being moved")
-            unallocated_order_found = TRUE
+            self.unallocated_order_found = TRUE
+            self.unallocated_order_found_no = i
 
         # Find which allocated order canvas has been moved
-        allocated_order_found = FALSE
-        allocated_order_found_no = 0
-        if unallocated_order_found == FALSE:
+        self.allocated_order_found = FALSE
+        allocated_order_canvas_found_no = 0
+        self.allocated_order_found_no = 0
+        self.allocated_order_found_date = 0
+        if self.unallocated_order_found == FALSE:
           for i in range(len(self.karer_hmi.allocated_order_canv)):
             if self.karer_hmi.allocated_order_canv[i] == event.widget:
-              #print("Allocated Order " + str(i) + " is being moved")
-              allocated_order_found = TRUE
-              allocated_order_found_no = i
+              self.allocated_order_found = TRUE
+              allocated_order_canvas_found_no = i
 
         #Map allocated order canvas to the data
         slot_arr = []
         inspected_allocated_order = 0
-        if allocated_order_found:
+        if self.allocated_order_found:
           for col in range(self.karer_hmi.no_of_days):
             try:
               slot_arr = self.karer_hmi.calendar_data.all_teams_data[self.karer_hmi.current_team_index].get_slots_for_the_day(self.karer_hmi.dates_arr[col])
@@ -50,33 +53,66 @@ class drag_n_drop:
               print("no team present")
 
             for row in range(len(slot_arr)):
-              if allocated_order_found_no == inspected_allocated_order:
-                print("Allocated Order day" + str(self.karer_hmi.dates_arr[col]) + " row" + str(row) + "is being moved")
+              if allocated_order_canvas_found_no == inspected_allocated_order:
+                print("Allocated Order day " + str(self.karer_hmi.dates_arr[col]) + " row " + str(row) + " is being moved.")
+                self.allocated_order_found_no = row
+                self.allocated_order_found_date = self.karer_hmi.dates_arr[col]
               inspected_allocated_order = inspected_allocated_order + 1
-
-
-
 
 
         # print("started")
         pass
 
     def on_drag(self, event):
-        # you could use this method to move a floating window that
-        # represents what you're dragging
-
-        #print("dragged")
 
         event.widget.place(
             x=self.window.winfo_pointerx() - self.window.winfo_rootx() - self.x_coordinates_of_button_click,
             y=self.window.winfo_pointery() - self.window.winfo_rooty() - self.y_coordinates_of_button_click)
-        # print("x= " +str(event.x_root)+ " y= " + str(event.y_root))
-        # Label(w, text="x= " +event.x+ " y= " + event.y , font=("Arial Bold", 15), background="Light Blue", width=20).place(x=600, y=600)
-        # pass
+        print(self.window.winfo_pointerx() - self.window.winfo_rootx() - self.x_coordinates_of_button_click + 90)
 
     def on_drop(self, event):
         # find the widget under the cursor
         print("dropped")
+        allocated_start_x = 170
+        allocated_gap_x = 180
+        canvas_last_x_coordinate = self.window.winfo_pointerx() - self.window.winfo_rootx() - self.x_coordinates_of_button_click + allocated_gap_x/2
+        unallocated_start_x = 1450
+        unallocated_gap_x = 180
+
+        destination_is_allocated = FALSE
+        destination_allocated_day = 0
+        destination_is_unallocated = FALSE
+
+
+        ##CHECK IF THE DESTINATION IS IN ALLOCATED REGION
+        for col in range(self.karer_hmi.no_of_days):
+          if canvas_last_x_coordinate > allocated_start_x + col * allocated_gap_x and canvas_last_x_coordinate <= allocated_start_x + (col+1) * allocated_gap_x:
+            print('Moving the slot to day ' + str(self.karer_hmi.dates_arr[col]))
+            destination_is_allocated = TRUE
+            destination_allocated_day = self.karer_hmi.dates_arr[col]
+
+        ##CHECK IF THE DESTINATION IS IN UNALLOCATED REGION
+        if destination_is_allocated == FALSE:
+          if canvas_last_x_coordinate > unallocated_start_x and canvas_last_x_coordinate <= unallocated_start_x + unallocated_gap_x:
+            destination_is_unallocated = TRUE
+
+        ##PREPARE THE SLOT TO BE MOVED and delete the dragged slot
+        if self.allocated_order_found == TRUE:
+          slot_to_move = self.karer_hmi.calendar_data.all_teams_data[self.karer_hmi.current_team_index].remove_slot_from_the_team(self.allocated_order_found_date,self.allocated_order_found_no)
+        elif self.unallocated_order_found == TRUE:
+          slot_to_move = self.karer_hmi.calendar_data.unallocated_orders.pop(self.unallocated_order_found_no)
+        else:
+          return
+
+        ##Move the DRAGGED SLOT TO ITS NEW LOCATION
+        if destination_is_allocated == TRUE:
+          self.karer_hmi.calendar_data.all_teams_data[self.karer_hmi.current_team_index].add_slot_to_the_team(slot_to_move,destination_allocated_day)
+        elif destination_is_unallocated == TRUE:
+          self.karer_hmi.calendar_data.unallocated_orders.append(slot_to_move)
+        else:
+          return
+
+
         self.karer_hmi.refresh_page()
 
     def __init__(self,win,hmi):

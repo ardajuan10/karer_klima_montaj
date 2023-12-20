@@ -26,6 +26,18 @@ class team_data:
         self.day_arr = []
         self.team_name = ""
 
+    def remove_slot_from_the_team(self, date, date_index):
+        for i in range(len(self.day_arr)):
+            if date == self.day_arr[i].date_of_data:  # same date is reached, now attempt to delete
+                try:
+                    return self.day_arr[i].slot_arr.pop(date_index)
+                except:
+                    print('Thing to delete doesnt exist')
+                return
+
+        print('Thing to delete doesnt exist')
+        return
+
     def add_slot_to_the_team(self, slot_data_to_insert, date):
 
         for i in range(len(self.day_arr)):
@@ -96,6 +108,7 @@ class karer_data:
         slot_temp_b.tel = "3266"
         slot_temp_b.person = "ADNAN"
         self.all_teams_data[0].add_slot_to_the_team(slot_temp_b, datetime.date.today() + datetime.timedelta(days=1))
+        #self.all_teams_data[0].remove_slot_from_the_team(datetime.date.today() + datetime.timedelta(days=1),0)
 
         slot_temp_c = slot_data()
         slot_temp_c.tel = "3466"
@@ -114,7 +127,7 @@ class karer_data:
 
         output_slot = self.all_teams_data[0].get_slots_for_the_day(datetime.date.today() + datetime.timedelta(days=1))
         print(output_slot[0].tel)
-        print(output_slot[1].tel)
+        #print(output_slot[1].tel)
 
         '''
         #output_slot[1].tel = "5"
