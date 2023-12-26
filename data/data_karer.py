@@ -9,6 +9,10 @@ class slot_data:
         self.person = ""
         self.tel = ""
         self.order_details = ""
+        self._9_kBtu_p_h_no = 0
+        self._12_kBtu_p_h_no = 0
+        self._18_kBtu_p_h_no = 0
+        self._24_kBtu_p_h_no = 0
         self.commissioned = False
         self.paid = False
 
