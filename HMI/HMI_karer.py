@@ -6,6 +6,91 @@ from datetime import date
 from datetime import timedelta
 import data.data_karer as data_class
 
+class details_popup:
+
+  def datails_main_screen(self, slot_data, is_allocated, alloc_col, alloc_row, unalloc_row):
+    print('Order placed at: ' + str(slot_data.date_of_order))
+    print('Region: ' + str(slot_data.region))
+    print('Address: ' + str(slot_data.address))
+    print('Person: ' + str(slot_data.person))
+    print('Telefon: ' + str(slot_data.tel))
+    print('Order details: ' + str(slot_data.order_details))
+    print('Commissioned: ' + str(slot_data.commissioned))
+    print('Paid: ' + str(slot_data.paid))
+    print('9 kbtu no: ' + str(slot_data._9_kBtu_p_h_no))
+    print('12 kbtu no: ' + str(slot_data._12_kBtu_p_h_no))
+    print('18 kbtu no: ' + str(slot_data._18_kBtu_p_h_no))
+    print('24 kbtu no: ' + str(slot_data._24_kBtu_p_h_no))
+
+    self.details_window = Tk()
+    self.details_window.title("Detaylar")
+    self.details_window.geometry('800x800')
+    self.details_window.config(background="Light Blue")
+
+    reg_digits = self.details_window.register(text_entry_rules.callback_digits)
+
+    label = Label(self.details_window, text="", font=("Arial Bold", 12), background="Light Blue", anchor="e", width=25)
+    label.grid(row=0, column=0, pady=5, padx=5)
+
+    label = Label(self.details_window, text="Sipariş alınma tarihi:", font=("Arial Bold", 12), background="Light Blue", anchor="e", width=25)
+    label.grid(row=1, column=0, pady=5, padx=5)
+
+    label = Label(self.details_window, text="Bölge:", font=("Arial Bold", 12), background="Light Blue",anchor="e", width=25)
+    label.grid(row=2, column=0, pady=5, padx=5)
+
+    label = Label(self.details_window, text="Adres:", font=("Arial Bold", 12),background="Light Blue", anchor="e", width=25)
+    label.grid(row=3, column=0, pady=5, padx=5)
+
+    label = Label(self.details_window, text="Şahıs:", font=("Arial Bold", 12),background="Light Blue", anchor="e", width=25)
+    label.grid(row=4, column=0, pady=5, padx=5)
+
+    label = Label(self.details_window, text="Telefon:", font=("Arial Bold", 12),background="Light Blue", anchor="e", width=25)
+    label.grid(row=5, column=0, pady=5, padx=5)
+
+    label = Label(self.details_window, text="Sipariş Detayları:", font=("Arial Bold", 12),background="Light Blue", anchor="e", width=25)
+    label.grid(row=6, column=0, pady=5, padx=5)
+
+    label = Label(self.details_window, text="Montaj Yapıldı mı?:", font=("Arial Bold", 12),background="Light Blue", anchor="e", width=25)
+    label.grid(row=7, column=0, pady=5, padx=5)
+
+    label = Label(self.details_window, text="Ödendi mi?:", font=("Arial Bold", 12),background="Light Blue", anchor="e", width=25)
+    label.grid(row=8, column=0, pady=5, padx=5)
+
+    label = Label(self.details_window, text="9 kBtu/h klima miktarı:", font=("Arial Bold", 12), background="Light Blue", anchor="e", width=25)
+    label.grid(row=9, column=0, pady=5, padx=5)
+
+    label = Label(self.details_window, text="12 kBtu/h klima miktarı:", font=("Arial Bold", 12), background="Light Blue", anchor="e", width=25)
+    label.grid(row=10, column=0, pady=5, padx=5)
+
+    label = Label(self.details_window, text="18 kBtu/h klima miktarı:", font=("Arial Bold", 12), background="Light Blue", anchor="e", width=25)
+    label.grid(row=11, column=0, pady=5, padx=5)
+
+    label = Label(self.details_window, text="24 kBtu/h klima miktarı:", font=("Arial Bold", 12), background="Light Blue", anchor="e", width=25)
+    label.grid(row=12, column=0, pady=5, padx=5)
+
+  def __init__(self, hmi):
+    self.karer_hmi = hmi
+
+
+class text_entry_rules:
+
+  #def reg_digits(self):
+  #  return self.window.register(self.callback_digits)
+
+  @staticmethod
+  def callback_digits(input):
+    if input.isdigit():
+      print(input)
+      return True
+
+    elif input == "":
+      print(input)
+      return True
+
+    else:
+      print(input)
+      return False
+
 class manage_teams_popup:
   def __change_team_name(self,index):
     self.karer_hmi.calendar_data.all_teams_data[index].team_name = self.new_team_name_text.get(1.0, 'end-1c')
@@ -105,54 +190,72 @@ class manage_teams_popup:
 class add_order_popup:
   def __add_the_order(self):
 
-    if self.text_adr.get(1.0, 'end-1c') != "" and self.text_Person.get(1.0, 'end-1c') != "" and self.text_tel.get(1.0, 'end-1c') != "" and self.text_order_details.get(1.0, 'end-1c') != "":
-      self.karer_hmi.calendar_data.add_an_unallocated_slot(region= self.value_inside_region.get(), address= self.text_adr.get(1.0, 'end-1c'), person= self.text_Person.get(1.0, 'end-1c'), tel= self.text_tel.get(1.0, 'end-1c'), order_details= self.text_order_details.get(1.0, 'end-1c'))
-      #last_elem = len(self.calendar_data.unallocated_orders) - 1
-      #print(self.calendar_data.unallocated_orders[last_elem].region)
-      #print(self.calendar_data.unallocated_orders[last_elem].address)
-      #print(self.calendar_data.unallocated_orders[last_elem].person)
-      #print(self.calendar_data.unallocated_orders[last_elem].tel)
-      #print(self.calendar_data.unallocated_orders[last_elem].order_details)
-      self.take_order_window.destroy()
-      self.karer_hmi.place_unallocated_orders()
+    if self.text_adr.get(1.0, 'end-1c') != "" and \
+            self.text_Person.get(1.0, 'end-1c') != "" and \
+            self.text_tel.get(1.0, 'end-1c') != "" and \
+            self.text_order_details.get(1.0, 'end-1c') != "" and \
+            self.text_9_btu_ac_no.get() != "" and \
+            self.text_12_btu_ac_no.get() != "" and \
+            self.text_18_btu_ac_no.get() != "" and \
+            self.text_24_btu_ac_no.get() != "" :
+      try:
+        self.karer_hmi.calendar_data.add_an_unallocated_slot(region=self.value_inside_region.get(),
+                                                             address=self.text_adr.get(1.0, 'end-1c'),
+                                                             person=self.text_Person.get(1.0, 'end-1c'),
+                                                             tel=self.text_tel.get(1.0, 'end-1c'),
+                                                             order_details=self.text_order_details.get(1.0, 'end-1c'),
+                                                             btu_9_no=int(self.text_9_btu_ac_no.get()),
+                                                             btu_12_no=int(self.text_12_btu_ac_no.get()),
+                                                             btu_18_no=int(self.text_18_btu_ac_no.get()),
+                                                             btu_24_no=int(self.text_24_btu_ac_no.get()))
+
+        self.take_order_window.destroy()
+        self.karer_hmi.place_unallocated_orders()
+      except:
+        current_team_label = Label(self.take_order_window, text="Klima sayısı nümerik olmalı", font=("Arial Bold", 12),background="Light Blue", foreground="Red")
+        current_team_label.grid(row=10, column=1, sticky='w')
+
+
 
     else:
       current_team_label = Label(self.take_order_window, text="Bütün boşlukları doldurunuz", font=("Arial Bold", 12), background="Light Blue", foreground= "Red")
-      current_team_label.place(x=50,y=200)
+      current_team_label.grid(row=10, column=1, sticky='w')
 
 
   def __take_order(self):
     self.take_order_window = Tk()
     self.take_order_window.title("Sipariş Al")
-    self.take_order_window.geometry('500x300')
+    self.take_order_window.geometry('700x500')
     self.take_order_window.config(background="Light Blue")
 
+    reg_digits = self.take_order_window.register(text_entry_rules.callback_digits)
+
     current_team_label = Label(self.take_order_window, text="Bölge:", font=("Arial Bold", 12), background="Light Blue",anchor="e",width=25)
-    current_team_label.grid(row=0, column=0)
+    current_team_label.grid(row=0, column=0, pady=5, padx=5)
 
     current_team_label = Label(self.take_order_window, text="Adres:", font=("Arial Bold", 12), background="Light Blue",anchor="e",width=25)
-    current_team_label.grid(row=1, column=0)
+    current_team_label.grid(row=1, column=0, pady=5, padx=5)
 
     current_team_label = Label(self.take_order_window, text="Şahıs:", font=("Arial Bold", 12), background="Light Blue",anchor="e",width=25)
-    current_team_label.grid(row=2, column=0)
+    current_team_label.grid(row=2, column=0, pady=5, padx=5)
 
     current_team_label = Label(self.take_order_window, text="Telefon:", font=("Arial Bold", 12), background="Light Blue",anchor="e",width=25)
-    current_team_label.grid(row=3, column=0)
+    current_team_label.grid(row=3, column=0, pady=5, padx=5)
 
     current_team_label = Label(self.take_order_window, text="Sipariş Detayları:", font=("Arial Bold", 12), background="Light Blue",anchor="e",width=25)
-    current_team_label.grid(row=4, column=0)
+    current_team_label.grid(row=4, column=0, pady=5, padx=5)
 
     current_team_label = Label(self.take_order_window, text="9 kBtu/h klima miktarı:", font=("Arial Bold", 12), background="Light Blue", anchor="e", width=25)
-    current_team_label.grid(row=5, column=0)
+    current_team_label.grid(row=5, column=0, pady=5, padx=5)
 
     current_team_label = Label(self.take_order_window, text="12 kBtu/h klima miktarı:", font=("Arial Bold", 12), background="Light Blue", anchor="e", width=25)
-    current_team_label.grid(row=6, column=0)
+    current_team_label.grid(row=6, column=0, pady=5, padx=5)
 
     current_team_label = Label(self.take_order_window, text="18 kBtu/h klima miktarı:", font=("Arial Bold", 12), background="Light Blue", anchor="e", width=25)
-    current_team_label.grid(row=7, column=0)
+    current_team_label.grid(row=7, column=0, pady=5, padx=5)
 
     current_team_label = Label(self.take_order_window, text="24 kBtu/h klima miktarı:", font=("Arial Bold", 12), background="Light Blue", anchor="e", width=25)
-    current_team_label.grid(row=8, column=0)
+    current_team_label.grid(row=8, column=0, pady=5, padx=5)
 
     #text_region = Text(take_order_window, width=30, height=1, font=("Arial",12))
     #text_region.grid(row=0, column=1)
@@ -162,22 +265,42 @@ class add_order_popup:
     self.value_inside_region.set(self.karer_hmi.calendar_data.regions[0])
     self.drop_region = OptionMenu(self.take_order_window, self.value_inside_region, self.karer_hmi.calendar_data.regions[0], *self.karer_hmi.calendar_data.regions)
     self.drop_region.config(width= 30)
-    self.drop_region.grid(row=0, column=1)
+    self.drop_region.grid(row=0, column=1, sticky='w')
 
     self.text_adr = Text(self.take_order_window, width=30, height=1, font=("Arial",12))
-    self.text_adr.grid(row=1, column=1)
+    self.text_adr.grid(row=1, column=1, sticky='w')
 
     self.text_Person = Text(self.take_order_window, width=30, height=1, font=("Arial",12))
-    self.text_Person.grid(row=2, column=1)
+    self.text_Person.grid(row=2, column=1, sticky='w')
 
     self.text_tel = Text(self.take_order_window, width=30, height=1, font=("Arial",12))
-    self.text_tel.grid(row=3, column=1)
+    self.text_tel.grid(row=3, column=1, sticky='w')
 
     self.text_order_details = Text(self.take_order_window, width=30, height=2, font=("Arial",12))
-    self.text_order_details.grid(row=4, column=1)
+    self.text_order_details.grid(row=4, column=1, sticky='w')
+
+    self.text_9_btu_ac_no = Entry(self.take_order_window, width=10,font=("Arial", 12))
+    self.text_9_btu_ac_no.grid(row=5, column=1, sticky='w')
+    self.text_9_btu_ac_no.config(validate="key", validatecommand=(reg_digits, '%P'))
+    self.text_9_btu_ac_no.insert(INSERT, "0")
+
+    self.text_12_btu_ac_no = Entry(self.take_order_window, width=10, font=("Arial", 12))
+    self.text_12_btu_ac_no.grid(row=6, column=1, sticky='w')
+    self.text_12_btu_ac_no.config(validate="key", validatecommand=(reg_digits, '%P'))
+    self.text_12_btu_ac_no.insert(INSERT, "0")
+
+    self.text_18_btu_ac_no = Entry(self.take_order_window, width=10, font=("Arial", 12))
+    self.text_18_btu_ac_no.grid(row=7, column=1, sticky='w')
+    self.text_18_btu_ac_no.config(validate="key", validatecommand=(reg_digits, '%P'))
+    self.text_18_btu_ac_no.insert(INSERT, "0")
+
+    self.text_24_btu_ac_no = Entry(self.take_order_window, width=10, font=("Arial", 12))
+    self.text_24_btu_ac_no.grid(row=8, column=1, sticky='w')
+    self.text_24_btu_ac_no.config(validate="key", validatecommand=(reg_digits, '%P'))
+    self.text_24_btu_ac_no.insert(INSERT, "0")
 
     take_order = Button(self.take_order_window, text="Onayla", command=self.__add_the_order)
-    take_order.place(x=350, y=350)
+    take_order.grid(row=9, pady=5, padx=5, column=1, sticky='w')
 
   def take_order_button(self):
     take_order = Button(self.karer_hmi.window, text="Sipariş Al", command=self.__take_order)
@@ -300,14 +423,16 @@ class drag_n_drop:
 
 class karer_Calendar_HMI:
 
-  def place_canvas(self, x_axis, y_axis, slot_data):
+  def place_canvas(self, x_axis, y_axis, slot_data, is_allocated, alloc_col, alloc_row, unalloc_row):
     rect_w = 160
     rect_h = 80
     canvas_out = Canvas(self.window, width=rect_w, height=rect_h, bg="Beige", bd=0, highlightthickness=0, )
     canvas_out.place(x=x_axis, y=y_axis)
     self.drag.add_dragable(canvas_out)
-    Label(canvas_out, text=slot_data.person + "\n" + slot_data.region, font=("Arial", 11), background="Beige").place(x=5, y=5)
-    Button(canvas_out, text="Detaylar").place(x=40, y=50)
+    label = Label(canvas_out, text=slot_data.person + "\n" + slot_data.region, font=("Arial", 11), background="Beige")
+    label.place(x=5, y=5)
+    button = Button(canvas_out, text="Detaylar", command=lambda: self.dtls_popup.datails_main_screen(slot_data, is_allocated, alloc_col, alloc_row, unalloc_row))
+    button.place(x=40, y=50)
 
     return canvas_out
 
@@ -334,7 +459,13 @@ class karer_Calendar_HMI:
 
 
     for i in range(len(self.calendar_data.unallocated_orders)):
-      self.unallocated_order_canv.append(self.place_canvas(x_axis = start_x_rec, y_axis = start_y_rec + i * label_offset, slot_data = self.calendar_data.unallocated_orders[i]))
+      self.unallocated_order_canv.append(self.place_canvas(x_axis = start_x_rec,
+                                                           y_axis = start_y_rec + i * label_offset,
+                                                           slot_data = self.calendar_data.unallocated_orders[i],
+                                                           is_allocated = False,
+                                                           alloc_col = 0,
+                                                           alloc_row = 0,
+                                                           unalloc_row = i))
 
   def __place_in_table(self, row, column, content, back):
     start_x = 170
@@ -396,7 +527,14 @@ class karer_Calendar_HMI:
         print("no team present")
 
       for row in range(len(slot_arr)):
-        self.allocated_order_canv.append(self.place_canvas(x_axis = start_x + col * gap_x, y_axis = start_y + row * gap_y, slot_data = slot_arr[row]))
+        self.allocated_order_canv.append(self.place_canvas(x_axis = start_x + col * gap_x,
+                                                           y_axis = start_y + row * gap_y,
+                                                           slot_data = slot_arr[row],
+                                                           is_allocated = True,
+                                                           alloc_col = col,
+                                                           alloc_row = row,
+                                                           unalloc_row = 0))
+
 
 
 
@@ -516,6 +654,8 @@ class karer_Calendar_HMI:
     self.window = my_canvas
     '''
     self.mng_teams_popup = manage_teams_popup(self)
+
+    self.dtls_popup = details_popup(self)
 
     self.drag = drag_n_drop(self.window, self)
 

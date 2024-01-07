@@ -75,7 +75,7 @@ class karer_data:
         except:
             print("out of bounds")
 
-    def add_an_unallocated_slot(self,region,address,person,tel,order_details):
+    def add_an_unallocated_slot(self,region,address,person,tel,order_details,btu_9_no,btu_12_no,btu_18_no,btu_24_no):
         temp_day = slot_data()
         temp_day.date_of_order = datetime.datetime.today()
         temp_day.region = region
@@ -85,6 +85,10 @@ class karer_data:
         temp_day.order_details = order_details
         temp_day.commissioned = False
         temp_day.paid = False
+        temp_day._9_kBtu_p_h_no = btu_9_no
+        temp_day._12_kBtu_p_h_no = btu_12_no
+        temp_day._18_kBtu_p_h_no = btu_18_no
+        temp_day._24_kBtu_p_h_no = btu_24_no
         self.unallocated_orders.append(temp_day)
 
 
